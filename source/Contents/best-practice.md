@@ -100,31 +100,16 @@
 
     We have made the following adapters available in this codebase:
 
-    | Method                                                                                                        | args.adapter       |         |
-    |---------------------------------------------------------------------------------------------------------------|--------------------|------------|
-    | [Bottleneck   adapters](https://docs.adapterhub.ml/overview.html#bottleneck-adapters)                         | `bottleneck_adapter` |          |
-    | [Language Adapters](https://docs.adapterhub.ml/overview.html#language-adapters-invertible-adapters)           | `lang_adapter`       |          |
-    | [Prefix   Tuning](https://docs.adapterhub.ml/overview.html#prefix-tuning)                                     | `prefix_tuning`      |          |
-    | [Compacter](https://docs.adapterhub.ml/overview.html#compacter)                                               | `dummy`              |          |
-    | [LoRA](https://docs.adapterhub.ml/overview.html#lora)                                                         | `lora_adapter`       |          |
-    | [(IA)^3](https://docs.adapterhub.ml/overview.html#ia-3)                                                       | `ia3_adapter`        |          |
-    | [Mix-and-Match   Adapters](https://docs.adapterhub.ml/overview.html#mix-and-match-adapters)                   | `mam_adapter`        |          |
-    | [UniPELT](https://docs.adapterhub.ml/overview.html#unipelt)                                                   | `unipelt`            |          |
-
-+-------------------------+---------------------+----------------------------------------------------------------------------------+---+---+---+---+---+---+---+
-| Method                  | args.adapter        | Doc                                                                              |   |   |   |   |   |   |   |
-+=========================+=====================+==================================================================================+===+===+===+===+===+===+===+
-| Bottleneck adapters     | bottleneck_adapter  | https://docs.adapterhub.ml/overview.html#bottleneck-adapters                     |   |   |   |   |   |   |   |
-| Language Adapters       | lang_adapter        | https://docs.adapterhub.ml/overview.html#language-adapters-invertible-adapters   |   |   |   |   |   |   |   |
-| Prefix Tuning           | prefix_tuning       | https://docs.adapterhub.ml/overview.html#prefix-tuning                           |   |   |   |   |   |   |   |
-| Compacter               | dummy               | https://docs.adapterhub.ml/overview.html#compacter                               |   |   |   |   |   |   |   |
-| LoRA                    | lora_adapter        | https://docs.adapterhub.ml/overview.html#lora                                    |   |   |   |   |   |   |   |
-| (IA)^3                  | ia3_adapter         | https://docs.adapterhub.ml/overview.html#ia-3                                    |   |   |   |   |   |   |   |
-| Mix-and-Match Adapters  | mam_adapter         | https://docs.adapterhub.ml/overview.html#mix-and-match-adapters                  |   |   |   |   |   |   |   |
-| UniPELT                 | unipelt             | https://docs.adapterhub.ml/overview.html#unipelt                                 |   |   |   |   |   |   |   |
-|                         |                     |                                                                                  |   |   |   |   |   |   |   |
-+-------------------------+---------------------+----------------------------------------------------------------------------------+---+---+---+---+---+---+---+
-
+|                                                Adapter                                                |     args.adapter     | Params (M) | Params (%) | STS Benchmark | ImageNet Zero-shot Accuracy | MSCOCO Retrieval Mean Recall |
+|:-----------------------------------------------------------------------------------------------------:|:--------------------:|------------|------------|---------------|----------------------------|------------------------------|
+|                    [Compacter](https://docs.adapterhub.ml/overview.html#compacter)                    |        `dummy`       | 0.06       | 0.05%      | 0.7474        | 24.48                      | 38.73                        |
+|                        [(IA)^3](https://docs.adapterhub.ml/overview.html#ia-3)                        |     `ia3_adapter`    | 0.06       | 0.05%      | 0.6576        | 19.23                      | 31.90                        |
+|                         [LoRA](https://docs.adapterhub.ml/overview.html#lora)                         |    `lora_adapter`    | 0.30       | 0.27%      | 0.7514        | 25.02                      | 40.58                        |
+|         [Bottleneck   adapters](https://docs.adapterhub.ml/overview.html#bottleneck-adapters)         | `bottleneck_adapter` | 1.79       | 1.61%      | 0.7449        | 26.15                      | 41.85                        |
+| [Language   Adapters](https://docs.adapterhub.ml/overview.html#language-adapters-invertible-adapters) |    `lang_adapter`    | 1.19       | 1.08%      | 0.7405        | 26.71                      | 42.39                        |
+|               [Prefix   Tuning](https://docs.adapterhub.ml/overview.html#prefix-tuning)               |    `prefix_tuning`   | 9.88       | 8.28%      | 0.7303        | 26.00                      | 41.31                        |
+|                      [UniPELT](https://docs.adapterhub.ml/overview.html#unipelt)                      |       `unipelt`      | 11.09      | 9.20%      | 0.7441        | 26.89                      | 43.45                        |
+|      [Mix-and-Match   Adapters](https://docs.adapterhub.ml/overview.html#mix-and-match-adapters)      |     `mam_adapter`    | 22.50      | 17.05%     | 0.7503        | 29.61                      | 45.82                        |
 
 ### **Projection Head**
 
