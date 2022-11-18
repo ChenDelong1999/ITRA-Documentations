@@ -59,15 +59,17 @@
     --image-model-builder 'torchhub' --image-model 'regnety_16gf' --image-model-tag 'facebookresearch/swag:main' \
     ...
     ```
-https://github.com/facebookresearch/VICRegL
-import torch
-model = torch.hub.load('facebookresearch/vicregl:main', 'resnet50_alpha0p9')
-model = torch.hub.load('facebookresearch/vicregl:main', 'resnet50_alpha0p75')
-model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_small_alpha0p9')
-model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_small_alpha0p75')
-model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_base_alpha0p9')
-model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_base_alpha0p75')
-model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_xlarge_alpha0p75')
+
+    https://github.com/facebookresearch/VICRegL
+    import torch
+    model = torch.hub.load('facebookresearch/vicregl:main', 'resnet50_alpha0p9')
+    model = torch.hub.load('facebookresearch/vicregl:main', 'resnet50_alpha0p75')
+    model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_small_alpha0p9')
+    model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_small_alpha0p75')
+    model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_base_alpha0p9')
+    model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_base_alpha0p75')
+    model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_xlarge_alpha0p75')
+
     For more details, see:
     - https://github.com/facebookresearch/swav
     - https://github.com/facebookresearch/dino
@@ -108,6 +110,20 @@ model = torch.hub.load('facebookresearch/vicregl:main', 'convnext_xlarge_alpha0p
     | [(IA)^3](https://docs.adapterhub.ml/overview.html#ia-3)                                                       | `ia3_adapter`        |          |
     | [Mix-and-Match   Adapters](https://docs.adapterhub.ml/overview.html#mix-and-match-adapters)                   | `mam_adapter`        |          |
     | [UniPELT](https://docs.adapterhub.ml/overview.html#unipelt)                                                   | `unipelt`            |          |
+
++-------------------------+---------------------+----------------------------------------------------------------------------------+---+---+---+---+---+---+---+
+| Method                  | args.adapter        | Doc                                                                              |   |   |   |   |   |   |   |
++=========================+=====================+==================================================================================+===+===+===+===+===+===+===+
+| Bottleneck adapters     | bottleneck_adapter  | https://docs.adapterhub.ml/overview.html#bottleneck-adapters                     |   |   |   |   |   |   |   |
+| Language Adapters       | lang_adapter        | https://docs.adapterhub.ml/overview.html#language-adapters-invertible-adapters   |   |   |   |   |   |   |   |
+| Prefix Tuning           | prefix_tuning       | https://docs.adapterhub.ml/overview.html#prefix-tuning                           |   |   |   |   |   |   |   |
+| Compacter               | dummy               | https://docs.adapterhub.ml/overview.html#compacter                               |   |   |   |   |   |   |   |
+| LoRA                    | lora_adapter        | https://docs.adapterhub.ml/overview.html#lora                                    |   |   |   |   |   |   |   |
+| (IA)^3                  | ia3_adapter         | https://docs.adapterhub.ml/overview.html#ia-3                                    |   |   |   |   |   |   |   |
+| Mix-and-Match Adapters  | mam_adapter         | https://docs.adapterhub.ml/overview.html#mix-and-match-adapters                  |   |   |   |   |   |   |   |
+| UniPELT                 | unipelt             | https://docs.adapterhub.ml/overview.html#unipelt                                 |   |   |   |   |   |   |   |
+|                         |                     |                                                                                  |   |   |   |   |   |   |   |
++-------------------------+---------------------+----------------------------------------------------------------------------------+---+---+---+---+---+---+---+
 
 
 ### **Projection Head**
