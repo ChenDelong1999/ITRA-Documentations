@@ -29,7 +29,9 @@
     conda install pillow pandas scikit-learn faiss-gpu ftfy tqdm matplotlib pycocotools wandb
     conda install -c huggingface transformers 
     conda install -c conda-forge sentence-transformers
-    pip install adapter-transformers
+    pip install adapter-transformers open_clip_torch
+  
+  pip install clip-benchmark
     
     # ELEVATOR requirements  
     pip install yacs timm git+https://github.com/haotian-liu/CLIP_vlp.git vision-evaluation

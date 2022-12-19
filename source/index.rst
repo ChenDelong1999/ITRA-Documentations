@@ -31,3 +31,6 @@ ITRA is a codebase for flexible and efficient Image Text Representation Alignmen
    :caption: Usage
 
    Contents/best-practice
+   Contents/CLIP (pretraining or re-pretraining)
+   Contents/eval-only
+   Contents/NORI
