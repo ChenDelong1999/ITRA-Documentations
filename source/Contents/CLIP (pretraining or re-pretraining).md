@@ -2,6 +2,7 @@
 
 ```bash
 conda activate ITRA
+export PYTHONPATH="$PYTHONPATH:$PWD/src"
 ```
 
 ## CLIP From Scratch
