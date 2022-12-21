@@ -10,7 +10,6 @@ ITRA Documentation
 ITRA is a codebase for flexible and efficient Image Text Representation Alignment.
 
 
-
 .. toctree::
    :maxdepth: 2
    :caption: About
@@ -28,10 +27,21 @@ ITRA is a codebase for flexible and efficient Image Text Representation Alignmen
 
 .. toctree::
    :maxdepth: 2
-   :caption: Usage
+   :caption: User Guide
 
-   Contents/usage/load-pretrained-weights
+   Contents/load-pretrained-multi-modal-weights
+   Contents/load-pretrained-uni-modal-weights
+   Contents/training-data
    Contents/best-practice
-   Contents/CLIP (pretraining or re-pretraining)
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Example Usage
+
+   Contents/contrastive-language-image-pretraining
    Contents/eval-only
-   Contents/NORI
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Experiment Reports
