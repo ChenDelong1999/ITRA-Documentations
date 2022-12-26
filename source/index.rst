@@ -3,45 +3,66 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-
-ITRA Documentation
+Welcome to the docmentation of ITRA ! 🎈
 ================================
 
-ITRA is a codebase for flexible and efficient Image Text Representation Alignment.
+ITRA (Image Text Representation Alignment) is a codebase for flexible and efficient vision language learning.
 
+TODO list
+================================
+- Method Supports
+      - MIM and FLIP support
+      - UniCL support
+      - SSL Image Augmentations
+      - Loading face encoder as image backbone
+      - Loading LLMs (OPT, PaLM) as text backbone
+      - Partially freeze the weighs
+      - 'CLIP Itself is a Strong Fine-tuner' re-implementation (https://arxiv.org/abs/2212.06138, https://discourse.brainpp.cn/t/topic/65205)
+- Evaluation Reports
+      - Custom evaluations
+      - Chinese CLIPs (ImageNet-CN zero-shot, MC-COCO-CN retrieval)
+      - MS COCO Retrieval Benchmarks
+      - Verify NLP ealuations
+
+
+
+.. image:: ../source/Contents/assets/pipeline.png
+   :align: right
+   :width: 10in
 
 .. toctree::
-   :maxdepth: 2
-   :caption: About
+   :maxdepth: 1
+   :caption: Introduction
 
-   Contents/overview
-
+   Contents/introduction/overview
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Getting Started
 
-   Contents/install-dependencies
-   Contents/prepare-pretraining-data
-   Contents/prepare-downstream-data
+   Contents/getting-started/install-dependencies
+   Contents/getting-started/prepare-pretraining-data
+   Contents/getting-started/prepare-downstream-data
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: User Guide
 
-   Contents/load-pretrained-multi-modal-weights
-   Contents/load-pretrained-uni-modal-weights
-   Contents/training-data
-   Contents/best-practice
+   Contents/user-guide/load-pretrained-multi-modal-weights
+   Contents/user-guide/load-pretrained-uni-modal-weights
+   Contents/user-guide/training-data
+   Contents/user-guide/best-practice
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Example Usage
 
-   Contents/contrastive-language-image-pretraining
-   Contents/eval-only
+   Contents/example-usage/clip-pretraining-or-finetuning
+   Contents/example-usage/eval-only
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Experiment Reports
+
+   Contents/experiment-reports/report_1
