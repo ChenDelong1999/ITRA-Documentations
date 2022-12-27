@@ -10,14 +10,19 @@ ITRA (Image Text Representation Alignment) is a codebase for flexible and effici
 
 TODO list
 ================================
-- Method Supports
+- CILP finetuning methods (MS-COCO as example)
+      - Partially freeze the weighs
+            - according to weight type (prams name filter)
+            - according to layers
       - MIM and FLIP support
+      - 'CLIP Itself is a Strong Fine-tuner' re-implementation (https://arxiv.org/abs/2212.06138, https://discourse.brainpp)
+      - Wise-FT re-implementation (https://arxiv.org/abs/2109.01903)
+
+- Method Supports
       - UniCL support
       - SSL Image Augmentations
       - Loading face encoder as image backbone
-      - Loading LLMs (OPT, PaLM) as text backbone
-      - Partially freeze the weighs
-      - 'CLIP Itself is a Strong Fine-tuner' re-implementation (https://arxiv.org/abs/2212.06138, https://discourse.brainpp.cn/t/topic/65205)
+      - Loading LLMs (OPT, PaLM) as text backbone.cn/t/topic/65205)
 - Evaluation Reports
       - Custom evaluations
       - Chinese CLIPs (ImageNet-CN zero-shot, MC-COCO-CN retrieval)
@@ -57,7 +62,8 @@ TODO list
    :maxdepth: 1
    :caption: Example Usage
 
-   Contents/example-usage/clip-pretraining-or-finetuning
+   Contents/example-usage/clip-pretraining
+   Contents/example-usage/clip-finetuning
    Contents/example-usage/eval-only
 
 
