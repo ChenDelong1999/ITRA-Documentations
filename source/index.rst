@@ -8,28 +8,6 @@ Welcome to the docmentation of ITRA ! 🎈
 
 ITRA (Image Text Representation Alignment) is a codebase for flexible and efficient vision language learning.
 
-TODO list
-================================
-- CILP finetuning methods (MS-COCO as example)
-      - Partially freeze the weighs
-            - according to weight type (prams name filter)
-            - according to layers
-      - MIM and FLIP support
-      - 'CLIP Itself is a Strong Fine-tuner' re-implementation (https://arxiv.org/abs/2212.06138, https://discourse.brainpp)
-      - Wise-FT re-implementation (https://arxiv.org/abs/2109.01903)
-
-- Method Supports
-      - UniCL support
-      - SSL Image Augmentations
-      - Loading face encoder as image backbone
-      - Loading LLMs (OPT, PaLM) as text backbone.cn/t/topic/65205)
-- Evaluation Reports
-      - Custom evaluations
-      - Chinese CLIPs (ImageNet-CN zero-shot, MC-COCO-CN retrieval)
-      - MS COCO Retrieval Benchmarks
-      - Verify NLP ealuations
-
-
 
 .. image:: ../source/Contents/assets/pipeline.png
    :align: right
@@ -72,3 +50,25 @@ TODO list
    :caption: Experiment Reports
 
    Contents/experiment-reports/report_1
+
+
+TODO list
+================================
+- CILP finetuning methods (MS-COCO as example)
+      - Partially freeze the weighs
+            - according to weight type (prams name filter)
+            - according to layers
+      - MIM and FLIP support
+      - 'CLIP Itself is a Strong Fine-tuner' re-implementation (https://arxiv.org/abs/2212.06138, https://discourse.brainpp)
+      - Wise-FT re-implementation (https://arxiv.org/abs/2109.01903)
+
+- Method Supports
+      - UniCL support
+      - SSL Image Augmentations
+      - Loading face encoder as image backbone
+      - Loading LLMs (OPT, PaLM) as text backbone.cn/t/topic/65205)
+- Evaluation Reports
+      - Custom evaluations
+      - Chinese CLIPs (ImageNet-CN zero-shot, MC-COCO-CN retrieval)
+      - MS COCO Retrieval Benchmarks
+      - Verify NLP ealuations
