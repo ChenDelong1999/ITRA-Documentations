@@ -8,6 +8,8 @@ Welcome to the docmentation of ITRA ! 🎈
 
 ITRA (Image Text Representation Alignment) is a codebase for flexible and efficient vision language learning.
 
+.. Hint:: ``ITRA`` is an ongoing project and its codes are still under development. A temporary repository of the codebase is located at: https://github.com/ChenDelong1999/ProtoRKD
+
 
 .. image:: ../source/Contents/assets/pipeline.png
    :align: right
@@ -58,6 +60,7 @@ TODO list
       - Partially freeze the weighs
             - according to weight type (prams name filter)
             - according to layers
+      - EMA support
       - MIM and FLIP support
       - 'CLIP Itself is a Strong Fine-tuner' re-implementation (https://arxiv.org/abs/2212.06138, https://discourse.brainpp)
       - Wise-FT re-implementation (https://arxiv.org/abs/2109.01903)

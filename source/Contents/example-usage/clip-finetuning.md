@@ -11,26 +11,15 @@ export PYTHONPATH="$PYTHONPATH:$PWD/src"
 ## Related Work
 
 - [CLIP Itself is a Strong Fine-tuner: Achieving 85.7% and 88.0% Top-1 Accuracy with ViT-B and ViT-L on ImageNet](https://arxiv.org/abs/2212.06138)
+- [Robust fine-tuning of zero-shot models](https://arxiv.org/abs/2109.01903)
 
 
 ## Fine-tune a CLIP for MS-COCO Retrieval
 
 [Paper-with-code Leaderboard](https://paperswithcode.com/sota/cross-modal-retrieval-on-coco-2014)
 
-```bash
-# 8x2080ti machine, ms coco 3 epoch
-torchrun --nproc_per_node 8 -m training.main \
-    --episode-size 39429 --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
-    --epochs 9 --save-frequency 9 --batch-size 32 --workers 2 \
-    --lr 1e-5 --warmup 100 --wd 0.5 --max-grad-norm 5 \
-    --image-model 'ViT-B-16' --image-model-builder 'openclip' --text-model 'ViT-B-16' --text-model-builder 'openclip'\
-    --pretrained-image-model --pretrained-text-model \
-    --loss 'InfoNCE' --eval-with-wise-ft 0.5 \
-    --report-to tensorboard --logs 'logs/MSCOCO-ViT-B-16'  --name '3ep-bs256-lr1e-5-WiseFT(0.5)'
-```
 
-Partial Finetune Examples:
+Finetuning tricks:
 ```bash
 # lock image tower, i.e., Locked Image Tuning (LiT) https://arxiv.org/abs/2111.07991
 --lock-image-model \
@@ -46,8 +35,60 @@ Partial Finetune Examples:
 
 # Only unfreeze all bias and norm params, i.e., Bias and Normalization Optimization (BiNor) https://arxiv.org/abs/2203.07190
 --lock-image-partial '!bias,!ln,!bn' --lock-text-partial '!bias,!ln' --lock-image-model  --lock-text-model \
+
+# Layer wise learning rate decay
+--layer_decay_image 0.9 --layer_decay_text 1 \
+
+# EMA Evaluation
+--model_ema --model_ema_decay 0.998 \
+
+# Evaluate the model with weight space ensemble Wise-FT (https://arxiv.org/abs/2109.01903)
+--eval-with-wise-ft 0.5 \
 ```
 
+
+# Experiment Reports
+
+Learning Rate
+
+| Learning Rate | 1e-5 | 2e-5 | 3e-5 | 5e-5 | 1e-4 | 5e-4 | 1e-3 |
+|---------------|------|------|------|------|------|------|------|
+| ResNet-50     |      |      |      |      |      |      |      |
+| ViT-B-32      |      |      |      |      |      |      |      |
+
+
+| Finetune mode | Backbone | Trainable Parameters (M) | GPU Memory (MB) |
+|---------------|------|------|------|
+| Naive finetune (all parameters) | ResNet-50 | 102.01 | 5836 |
+
+# Commands
+
+```bash
+# Vanilla Naive finetuning
+# 8x2080ti machine, ms coco 10 epoch
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
+    --epochs 20 --save-frequency 20 --batch-size 32 --workers 2 \
+    --lr 2e-5 --warmup 100 --weight_decay 0.5 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '20ep-bs256-lr2e-5-wd0.5'
+```
+
+```bash
+# 8x2080ti machine, ms coco 10 epoch, test
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
+    --epochs 10 --save-frequency 20 --batch-size 32 --workers 2 \
+    --lr 2e-5 --warmup 100 --weight_decay 0.5 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model \
+    --loss 'InfoNCE' --model_ema --model_ema_decay 0.98 \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '10ep-bs256-lr2e-5-wd0.5-EMA(0.98)'
+```
 
 ```bash
 # 8x2080ti machine, RSICD
