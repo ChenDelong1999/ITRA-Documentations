@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'ITRA'
-copyright = '2022, Delong Chen (陈德龙) at HHU and Megvii'
+copyright = '2022, Delong Chen (陈德龙) at Megvii and HHU'
 author = 'Delong Chen'
 
 # The full version, including alpha/beta/rc tags

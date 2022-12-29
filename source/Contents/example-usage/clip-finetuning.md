@@ -1,4 +1,4 @@
-# Fine-tuning CLIP for MS-COCO Retrieval
+# Fine-tuning CLIP for MS-COCO Retrieval ⭐
 
 [comment]: <> (**TL;DR**: we fine-tuned a CLIP)
 
