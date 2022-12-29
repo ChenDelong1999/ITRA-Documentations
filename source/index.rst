@@ -17,13 +17,13 @@ ITRA (Image Text Representation Alignment) is a codebase for flexible and effici
    :width: 10in
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
    :caption: Introduction
 
    Contents/introduction/overview
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
    :caption: Getting Started
 
    Contents/getting-started/install-dependencies
@@ -31,7 +31,7 @@ ITRA (Image Text Representation Alignment) is a codebase for flexible and effici
    Contents/getting-started/prepare-downstream-data
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
    :caption: User Guide
 
    Contents/user-guide/load-pretrained-multi-modal-weights
@@ -41,7 +41,7 @@ ITRA (Image Text Representation Alignment) is a codebase for flexible and effici
    Contents/user-guide/use-adapters
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
    :caption: Example Usage
 
    Contents/example-usage/eval-only
