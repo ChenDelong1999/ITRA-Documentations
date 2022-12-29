@@ -57,9 +57,14 @@ ITRA (Image Text Representation Alignment) is a codebase for flexible and effici
          - UniCL support
          - SSL Image Augmentations
          - Loading face encoder as image backbone
-         - Loading LLMs (OPT, PaLM) as text backbone.cn/t/topic/65205)
+         - Loading LLMs (OPT, PaLM) as text backbone
+         - ProtoCLIP implementation
+         - Verify the implementation of other loss functions
+         - Verify NLP evaluations (STS-B, MS-Marco, etc.)
 
-   - Evaluation Reports
-         - Official CLIPs Evaluation
-         - Chinese CLIPs Evaluation (ImageNet-CN zero-shot, MC-COCO-CN retrieval)
-         - Verify NLP evaluations
+   - Documentation
+         - SimCSE and PromptBERT re-implementation
+         - Vision-to-language Knowledge Distillation
+         - Language-to-vision Knowledge Distillation
+         - Teacher selection based on Information Bottleneck Theory
+         - Chinese CLIPs' Evaluation Reports (ImageNet-CN zero-shot, MC-COCO-CN retrieval)

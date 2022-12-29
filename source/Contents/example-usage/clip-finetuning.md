@@ -108,6 +108,8 @@ Under this configuration, fine-tuning significantly improves the retrieval perfo
 
 ## Finetuning with More Tricks
 
+Under construction ...
+
 **1. Partial finetuning**
 
 ```bash
