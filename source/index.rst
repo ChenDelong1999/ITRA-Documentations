@@ -50,16 +50,16 @@ ITRA (Image Text Representation Alignment) is a codebase for flexible and effici
 
 
 .. todo::
-- CILP finetuning methods (MS-COCO as example)
-      - MIM and FLIP support
+   - CILP finetuning methods (MS-COCO as example)
+         - MIM and FLIP support
 
-- Method Supports
-      - UniCL support
-      - SSL Image Augmentations
-      - Loading face encoder as image backbone
-      - Loading LLMs (OPT, PaLM) as text backbone.cn/t/topic/65205)
+   - Method Supports
+         - UniCL support
+         - SSL Image Augmentations
+         - Loading face encoder as image backbone
+         - Loading LLMs (OPT, PaLM) as text backbone.cn/t/topic/65205)
 
-- Evaluation Reports
-      - Official CLIPs Evaluation
-      - Chinese CLIPs Evaluation (ImageNet-CN zero-shot, MC-COCO-CN retrieval)
-      - Verify NLP evaluations
+   - Evaluation Reports
+         - Official CLIPs Evaluation
+         - Chinese CLIPs Evaluation (ImageNet-CN zero-shot, MC-COCO-CN retrieval)
+         - Verify NLP evaluations

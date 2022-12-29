@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'ITRA'
-copyright = '2022, Delong Chen'
+copyright = '2022, Delong Chen (陈德龙) at HHU and Megvii'
 author = 'Delong Chen'
 
 # The full version, including alpha/beta/rc tags
@@ -57,11 +57,11 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
 
-html_css_files = [
-    'css/custom.css',
-]
+# html_static_path = ['_static']
+# html_css_files = [
+#     'css/custom.css',
+# ]
 
 def setup(app):
     app.add_config_value('recommonmark_config', {
