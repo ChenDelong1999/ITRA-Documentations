@@ -2,7 +2,7 @@
 # Use Adapters
 The [Adapter-Transformers](https://github.com/adapter-hub/adapter-transformers) liberary enables Delta-tuning on popular huggingface transformers. See [Model Overview](https://docs.adapterhub.ml/model_overview.html) for available adaptations, and see the [Docs](https://docs.adapterhub.ml/) and [AdapterHub](https://adapterhub.ml/) for more details.
 
-    We have made the following adapters available in this codebase:
+We have made the following adapters available in this codebase:
 
 |                                                Adapter                                                |     args.adapter     | Params (M) | Params (%) | STS Benchmark | ImageNet Zero-shot Accuracy | MSCOCO Retrieval Mean Recall |
 |:-----------------------------------------------------------------------------------------------------:|:--------------------:|------------|------------|---------------|----------------------------|------------------------------|
@@ -15,9 +15,7 @@ The [Adapter-Transformers](https://github.com/adapter-hub/adapter-transformers) 
 |                      [UniPELT](https://docs.adapterhub.ml/overview.html#unipelt)                      |       `unipelt`      | 11.09      | 9.20%      | 0.7441        | 26.89                      | 43.45                        |
 |      [Mix-and-Match   Adapters](https://docs.adapterhub.ml/overview.html#mix-and-match-adapters)      |     `mam_adapter`    | 22.50      | 17.05%     | 0.7503        | 29.61                      | 45.82                        |
 
-### **Projection Head**
-
-- Linear projection head
-
-- [DINO MLP Head](https://github.com/facebookresearch/dino/blob/cb711401860da580817918b9167ed73e3eef3dcf/vision_transformer.py#L257) (optionally with a prototype layer in the last)
+- Projection Head Adapters
+  - Linear projection head
+  - [DINO MLP Head](https://github.com/facebookresearch/dino/blob/cb711401860da580817918b9167ed73e3eef3dcf/vision_transformer.py#L257) (optionally with a prototype layer in the last)
 
