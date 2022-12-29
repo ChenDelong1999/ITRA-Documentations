@@ -1,8 +1,5 @@
-
-![pipeline](./assets/pipeline.png "pipelinee")
-
 # About This Codebase
-ITRA is a codebase for flexible and efficient Image Text Representation Alignment.
+ITRA is a codebase for flexible and efficient Image Text Representation Alignment...
 
 ## Supported Methods
 

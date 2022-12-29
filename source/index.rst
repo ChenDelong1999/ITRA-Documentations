@@ -8,7 +8,8 @@ Welcome to the docmentation of ITRA ! 🎈
 
 ITRA (Image Text Representation Alignment) is a codebase for flexible and efficient vision language learning.
 
-.. Hint:: ``ITRA`` is an ongoing project and its codes are still under development. A temporary repository of the codebase is located at: https://github.com/ChenDelong1999/ProtoRKD
+.. note::
+   ``ITRA`` is an ongoing project and its codes are still under development. A temporary repository of the codebase is located at: https://github.com/ChenDelong1999/ProtoRKD
 
 
 .. image:: ../source/Contents/assets/pipeline.png
@@ -36,22 +37,16 @@ ITRA (Image Text Representation Alignment) is a codebase for flexible and effici
    Contents/user-guide/load-pretrained-multi-modal-weights
    Contents/user-guide/load-pretrained-uni-modal-weights
    Contents/user-guide/training-data
-   Contents/user-guide/best-practice
+   Contents/user-guide/loss-functions
+   Contents/user-guide/use-adapters
 
 .. toctree::
    :maxdepth: 1
    :caption: Example Usage
 
+   Contents/example-usage/eval-only
    Contents/example-usage/clip-pretraining
    Contents/example-usage/clip-finetuning
-   Contents/example-usage/eval-only
-
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Experiment Reports
-
-   Contents/experiment-reports/report_1
 
 
 TODO list

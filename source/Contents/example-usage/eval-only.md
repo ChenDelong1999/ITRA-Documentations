@@ -1,18 +1,24 @@
-# Evaluation Only
+# Direct Evaluation
 
 
-
+## Zero-shot Image-text Retrieval
 
 ```bash
 # 1x2080ti machine
 python src/training/main.py \
     --linear-frequency 0  --zeroshot-frequency 0 --retrieval-frequency 1  --nlp-eval-frequency 0 --eval-data-dir '/data/Datasets' \
     --retrieval-data 'mscoco_captions' \
-    --image-model 'ViT-L-14-336' --image-model-builder 'openclip' \
-    --text-model 'ViT-L-14-336' --text-model-builder 'openclip' \
+    --image-model 'RN50x4' --image-model-builder 'openclip'  \
+    --text-model 'RN50x4' --text-model-builder 'openclip'  \
     --pretrained-image-model --pretrained-text-model \
-    --logs 'logs/eval'  --name 'CLIP-ViT-L-14-336-zeroshot-retrieval'
+    --logs 'logs/MSCOCO-zeroshot'  --name 'RN50x4-openclip-zeroshot-retrieval-resize_longest_max'
+    
+    
+# [('RN50', 'openai'), ('RN50', 'yfcc15m'), ('RN50', 'cc12m'), ('RN50-quickgelu', 'openai'), ('RN50-quickgelu', 'yfcc15m'), ('RN50-quickgelu', 'cc12m'), ('RN101', 'openai'), ('RN101', 'yfcc15m'), ('RN101-quickgelu', 'openai'), ('RN101-quickgelu', 'yfcc15m'), ('RN50x4', 'openai'), ('RN50x16', 'openai'), ('RN50x64', 'openai'), ('ViT-B-32', 'openai'), ('ViT-B-32', 'laion400m_e31'), ('ViT-B-32', 'laion400m_e32'), ('ViT-B-32', 'laion2b_e16'), ('ViT-B-32', 'laion2b_s34b_b79k'), ('ViT-B-32-quickgelu', 'openai'), ('ViT-B-32-quickgelu', 'laion400m_e31'), ('ViT-B-32-quickgelu', 'laion400m_e32'), ('ViT-B-16', 'openai'), ('ViT-B-16', 'laion400m_e31'), ('ViT-B-16', 'laion400m_e32'), ('ViT-B-16-plus-240', 'laion400m_e31'), ('ViT-B-16-plus-240', 'laion400m_e32'), ('ViT-L-14', 'openai'), ('ViT-L-14', 'laion400m_e31'), ('ViT-L-14', 'laion400m_e32'), ('ViT-L-14', 'laion2b_s32b_b82k'), ('ViT-L-14-336', 'openai'), ('ViT-H-14', 'laion2b_s32b_b79k'), ('ViT-g-14', 'laion2b_s12b_b42k'), ('roberta-ViT-B-32', 'laion2b_s12b_b32k'), ('xlm-roberta-base-ViT-B-32', 'laion5b_s13b_b90k'), ('xlm-roberta-large-ViT-H-14', 'frozen_laion5b_s13b_b90k')]
+
 ```
+
+
 
 
 ```bash
@@ -21,10 +27,10 @@ python src/training/main.py \
     --linear-frequency 0  --zeroshot-frequency 0 --retrieval-frequency 1  --nlp-eval-frequency 0 --eval-data-dir '/data/Datasets' \
     --retrieval-data '/data/Datasets/RSICD/csv/rsicd_test.csv' --retrieval-images-dir '/data/Datasets/RSICD/RSICD_images/RSICD_images' \
     --retrieval-csv-separator '\t' --retrieval-csv-img-key 'filename' --retrieval-csv-caption-key 'title' \
-    --image-model 'ViT-H-14' --image-model-builder 'openclip' --image-model-tag 'laion2b_s32b_b79k' \
-    --text-model 'ViT-H-14' --text-model-builder 'openclip' --text-model-tag 'laion2b_s32b_b79k' \
+    --image-model 'ViT-L-14-336' --image-model-builder 'openclip' \
+    --text-model 'ViT-L-14-336' --text-model-builder 'openclip'  \
     --pretrained-image-model --pretrained-text-model \
-    --logs 'logs/eval'  --name 'openclip-ViT-H-14-retrieval'
+    --logs 'logs/RSICD-zero-shot'  --name 'openclip-ViT-L-14-336-retrieval'
 ```
 
 
