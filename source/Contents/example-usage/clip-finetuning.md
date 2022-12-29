@@ -3,11 +3,11 @@
 [comment]: <> (**TL;DR**: we fine-tuned a CLIP)
 
 
-## Zero-shot Evaluation
+## Zero-shot Retrieval Evaluation of CLIP
 
 CLIP is a strong model for zero-shot image text retrieval. See [paper-with-code leader board](https://paperswithcode.com/sota/zero-shot-cross-modal-retrieval-on-coco-2014) for performance comparison.
 
-|           Backbone          | # Params all (M) | # Params image (M) | # Params text (M) |   I2T R@1  |  I2T R@5I  |   I2TR@10  |   T2I R@1  |   T2I R@5  |  T2I R@10  | **Mean Recall** |
+|           Backbone          | # Params all (M) | # Params image (M) | # Params text (M) |   I2T R@1  |  I2T R@5  |   I2TR@10  |   T2I R@1  |   T2I R@5  |  T2I R@10  | **Mean Recall** |
 |:---------------------------:|:----------------:|:------------------:|:-----------------:|:----------:|:----------:|:----------:|:----------:|:----------:|:----------:|:---------------:|
 |             RN50            |          102.01  |             38.32  |            63.69  |     48.06  |     73.88  |     83.02  |     28.31  |     52.96  |     64.10  |      **58.39 ** |
 |            RN101            |          119.69  |             56.26  |            63.43  |     49.80  |     74.42  |     82.72  |     30.18  |     54.15  |     65.28  |      **59.43 ** |
@@ -18,7 +18,7 @@ CLIP is a strong model for zero-shot image text retrieval. See [paper-with-code 
 |       **ViT-L-14-336**      |      **427.94 ** |        **304.29 ** |       **123.65 ** | **57.46 ** | **80.34 ** | **87.58 ** | **36.09 ** | **60.66 ** | **70.76 ** |      **65.48 ** |
 | **ViT-L-14-336 (official)** |      **427.94 ** |        **304.29 ** |       **123.65 ** |  **58.4 ** |  **81.5 ** |  **88.1 ** |  **37.8 ** |  **62.4 ** |  **72.2 ** |      **66.73 ** |
 
-For ViT-L-14-336, there is a small gap between our implementation and the officially reported results. We suspect it is caused by image pre-processing: the above re-implementation uses the default `Resize`ransform [as implemented in the official CLIP codes](https://github.com/openai/CLIP/blob/d50d76daa670286dd6cacf3bcd80b5e4823fc8e1/clip/clip.py#L79), while COCO images are mostly not square, it creates a small train-test domain gap due to distortion. If we alternatively use a `ResizeMaxSize` as implemented [here](https://github.com/mlfoundations/open_clip/blob/3ed21be93e3b9493024dbb42b4461825b5c650a6/src/open_clip/transform.py#L13), the results surpass the official reported performance.
+For ViT-L-14-336 (standard CLIP plus an additional pretraining epoch with 336x336 resolution), there is a small gap between our implementation and the officially reported results. We suspect it is caused by image pre-processing: the above re-implementation uses the default `Resize` transform [as implemented in the official CLIP codes](https://github.com/openai/CLIP/blob/d50d76daa670286dd6cacf3bcd80b5e4823fc8e1/clip/clip.py#L79), while COCO images are mostly not square, it creates a small train-test domain gap due to distortion. If we alternatively use a `ResizeMaxSize` (as implemented [here](https://github.com/mlfoundations/open_clip/blob/3ed21be93e3b9493024dbb42b4461825b5c650a6/src/open_clip/transform.py#L13)), the results then surpass the official reported performance.
 
 |     Backbone     |     Pre-process    |     I2T R@1 |     I2T R@5I |     I2TR@10 |     T2I R@1 |     T2I R@5 |     T2I R@10 |    Mean Recall |
 |:----------------:|:------------------:|:-----------:|:------------:|:-----------:|:-----------:|:-----------:|:------------:|:--------------:|
@@ -26,7 +26,7 @@ For ViT-L-14-336, there is a small gap between our implementation and the offici
 |   ViT-L-14-336   | Official (unknown) |       58.4  |        81.5  |   **88.1 ** |       37.8  |       62.4  |        72.2  |         66.73  |
 | **ViT-L-14-336** |  **ResizeMaxSize** |  **59.20 ** |   **81.70 ** |      87.96  |  **39.02 ** |  **63.86 ** |   **73.52 ** |     **67.54 ** |
 
-Changing `Resize` into `ResizeMaxSize` brings +2.06 improvement for ViT-L-336. However, we find that the benifit of this modification is not consistent across different backbones. As shown in the following table, generally, `ResizeMaxSize` is more beneficial for large models, and especially the models that have been trained to process HD images (ViT-L-14 v.s. ViT-L-14-336).
+Changing `Resize` into `ResizeMaxSize` brings +2.06 improvement for ViT-L-14-336. However, we find that the benifit of this modification is not consistent across different backbones. As shown in the following table, generally, `ResizeMaxSize` is more beneficial for large models, and especially the models that have been trained to process HD images (ViT-L-14 v.s. ViT-L-14-336).
 
 |                                 Backbone                                |  RN50 |  RN101 | RN50x16 | ViT-B-32 | ViT-B-16 | ViT-L-14 | ViT-L-14-336 |
 |:-----------------------------------------------------------------------:|:-----:|:------:|:-------:|:--------:|:--------:|:--------:|:------------:|
@@ -41,12 +41,12 @@ First, assume that you have already created an environment with [required depend
 Then you can activate the environment and modify the `PYTHONPATH` variable, such that modules can be imported successfully.
 ```bash
 conda activate ITRA
+cd path/to/ITRA/
 export PYTHONPATH="$PYTHONPATH:$PWD/src"
+ulimit -n 100000 # occasionally the dataloader get stuck due to multiprocessing deadlocks, maybe it can reduce the chance. I'm not totally sure...
 ```
 
-[Paper-with-code Leaderboard](https://paperswithcode.com/sota/cross-modal-retrieval-on-coco-2014)
-
-Our baseline setting are listed as follows:
+Then we can start to fine-tune a CLIP on MS-COCO captions 2017 training set (118k images). The results should be compared with the [Paper-with-code Leaderboard](https://paperswithcode.com/sota/cross-modal-retrieval-on-coco-2014). Our baseline setting are listed as follows:
 
 - backbone: ResNet50
 - batch_size: 32x8=256
@@ -75,10 +75,14 @@ torchrun --nproc_per_node 8 -m training.main \
 
 This configuration significantly improves the retrieval performance (58.39→73.98, +15.59).
 
-|  Backbone  |   I2T R@1 |    I2T R@5I |    I2TR@10 |    T2I R@1 |    T2I R@5 |    T2I R@10 | Mean Recall |
-|:----------:|:---------:|:-----------:|:----------:|:----------:|:----------:|:-----------:|:-----------:|
-|  Zero-shot |    48.06  |      73.88  |     83.02  |     28.31  |     52.96  |      64.10  |      58.39  |
-| Fine-tuned |    64.84  |      86.62  |     92.30  |     44.99  |     72.76  |      82.34  |      73.98  |
+|Type|Model|# Params (M)| I2T R@1| I2T R@5I| I2TR@10| T2I R@1| T2I R@5| T2I R@10|Mean Recall|
+|---|---|---|---|---|---|---|---|---|---|
+|Two-stream|Zero-shot CLIP RN50|102.01|48.06|73.88|83.02|28.31|52.96|64.1|58.39|
+|Two-stream|Fine-tuned CLIP RN50|102.01|64.84|86.62|92.3|44.99|72.76|82.34|73.98|
+|Two-stream|FLIP (ViT-L-14) |427.94|78.9|94.4|97.4|61.2|84.3|90.6|84.5|
+|Two-stream|Florence (CoSwin-H) (paper-with-code two-stream SoTA by 2022.12)|637|81.8|95.2||63.2|85.7|||
+|Single-stream| BLIP :math:`_large` |220|80.6|95.2|97.6|63.1|85.3|91.1|85.5|
+|Single-stream|PTP-BLIP_large (paper-with-code single-stream SoTA by 2022.12)|220|84.2|79.3|98.8|68.8|89.5|94.2|88.8|
 
 
 
@@ -148,11 +152,11 @@ torchrun --nproc_per_node 8 -m training.main \
     --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
     --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
     --epochs 10 --save-frequency 0 --batch-size 32 --workers 2 \
-    --lr 1e-5 --warmup 100 --weight_decay 1.25 --max-grad-norm 5 \
+    --lr 1e-5 --warmup 100 --weight_decay 1.75 --max-grad-norm 5 \
     --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
     --pretrained-image-model --pretrained-text-model \
     --loss 'InfoNCE' \
-    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '10ep-bs256-lr1e-5-wd1.25'
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '10ep-bs256-lr1e-5-wd1.75'
 
     
 # Vanilla Naive finetuning
@@ -161,11 +165,11 @@ torchrun --nproc_per_node 8 -m training.main \
     --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
     --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
     --epochs 10 --save-frequency 0 --batch-size 32 --workers 2 \
-    --lr 1e-5 --warmup 100 --weight_decay 1.5 --max-grad-norm 5 \
+    --lr 1e-5 --warmup 100 --weight_decay 2.0 --max-grad-norm 5 \
     --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
     --pretrained-image-model --pretrained-text-model \
     --loss 'InfoNCE' \
-    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '10ep-bs256-lr1e-5-wd1.5'
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '10ep-bs256-lr1e-5-wd2.0'
     
     
     

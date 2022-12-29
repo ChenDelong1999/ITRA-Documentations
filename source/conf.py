@@ -32,8 +32,11 @@ release = '0.1'
 # ones.
 extensions = [
     'recommonmark',
-    'sphinx_markdown_tables'
+    'sphinx_markdown_tables',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.todo',
 ]
+todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

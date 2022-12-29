@@ -49,8 +49,7 @@ ITRA (Image Text Representation Alignment) is a codebase for flexible and effici
    Contents/example-usage/clip-finetuning
 
 
-TODO list
-================================
+.. todo::
 - CILP finetuning methods (MS-COCO as example)
       - MIM and FLIP support
 
