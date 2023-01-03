@@ -5,9 +5,9 @@
 
 ## Zero-shot Retrieval Evaluation
 
-CLIP is a strong model for zero-shot image text retrieval. The official paper only reports the performance of the largest CLIP (ViT-L-14-336), while here we presents our evaluation of other architectures of CLIP. See [paper-with-code leader board](https://paperswithcode.com/sota/zero-shot-cross-modal-retrieval-on-coco-2014) for performance comparison with other zero-shot retrieval methods.
+CLIP is a strong model for zero-shot image text retrieval. Since the official paper only reports the performance of the largest CLIP ViT-L-14-336 (standard 32 epoch plus an additional pretraining epoch with 336x336 resolution), here we present our evaluation of other architectures of CLIP. See [paper-with-code leader board](https://paperswithcode.com/sota/zero-shot-cross-modal-retrieval-on-coco-2014) for performance comparison with other zero-shot retrieval methods.
 
-|           Backbone          | # Params all (M) | # Params image (M) | # Params text (M) |   I2T R@1  |  I2T R@5  |   I2TR@10  |   T2I R@1  |   T2I R@5  |  T2I R@10  | **Mean Recall** |
+|           Backbone          | # Params all (M) | # Params image (M) | # Params text (M) |   I2T R@1  |  I2T R@5  |   I2T R@10  |   T2I R@1  |   T2I R@5  |  T2I R@10  | **Mean Recall** |
 |:---------------------------:|:----------------:|:------------------:|:-----------------:|:----------:|:----------:|:----------:|:----------:|:----------:|:----------:|:---------------:|
 |             RN50            |          102.01  |             38.32  |            63.69  |     48.06  |     73.88  |     83.02  |     28.31  |     52.96  |     64.10  |      **58.39 ** |
 |            RN101            |          119.69  |             56.26  |            63.43  |     49.80  |     74.42  |     82.72  |     30.18  |     54.15  |     65.28  |      **59.43 ** |
@@ -18,7 +18,7 @@ CLIP is a strong model for zero-shot image text retrieval. The official paper on
 |       **ViT-L-14-336**      |      **427.94 ** |        **304.29 ** |       **123.65 ** | **57.46 ** | **80.34 ** | **87.58 ** | **36.09 ** | **60.66 ** | **70.76 ** |      **65.48 ** |
 | **ViT-L-14-336 (official)** |      **427.94 ** |        **304.29 ** |       **123.65 ** |  **58.4 ** |  **81.5 ** |  **88.1 ** |  **37.8 ** |  **62.4 ** |  **72.2 ** |      **66.73 ** |
 
-For ViT-L-14-336 (standard CLIP plus an additional pretraining epoch with 336x336 resolution), there is a small gap between our implementation and the officially reported results. We suspect it is caused by image pre-processing: the above re-implementation uses the default `Resize` transform [as implemented in the official CLIP codes](https://github.com/openai/CLIP/blob/d50d76daa670286dd6cacf3bcd80b5e4823fc8e1/clip/clip.py#L79), while COCO images are mostly not square, it creates a small train-test domain gap due to distortion. If we alternatively use a `ResizeMaxSize` (as implemented [here](https://github.com/mlfoundations/open_clip/blob/3ed21be93e3b9493024dbb42b4461825b5c650a6/src/open_clip/transform.py#L13)), the results then surpass the official reported performance.
+For ViT-L-14-336, there is a small gap between our implemented evaluation and the officially reported results. We suspect it is caused by image pre-processing: the above re-implementations use the default `Resize` transform [as implemented in the official CLIP repo](https://github.com/openai/CLIP/blob/d50d76daa670286dd6cacf3bcd80b5e4823fc8e1/clip/clip.py#L79), while COCO images are mostly not square, it creates a small train-test domain gap due to distortion. If we alternatively use a `ResizeMaxSize` as implemented [here](https://github.com/mlfoundations/open_clip/blob/3ed21be93e3b9493024dbb42b4461825b5c650a6/src/open_clip/transform.py#L13), the results then surpass the official reported performance.
 
 |     Backbone     |     Pre-process    |     I2T R@1 |     I2T R@5I |     I2TR@10 |     T2I R@1 |     T2I R@5 |     T2I R@10 |    Mean Recall |
 |:----------------:|:------------------:|:-----------:|:------------:|:-----------:|:-----------:|:-----------:|:------------:|:--------------:|
@@ -26,7 +26,7 @@ For ViT-L-14-336 (standard CLIP plus an additional pretraining epoch with 336x33
 |   ViT-L-14-336   | Official (unknown) |       58.4  |        81.5  |   **88.1 ** |       37.8  |       62.4  |        72.2  |         66.73  |
 | **ViT-L-14-336** |  **ResizeMaxSize** |  **59.20 ** |   **81.70 ** |      87.96  |  **39.02 ** |  **63.86 ** |   **73.52 ** |     **67.54 ** |
 
-Changing `Resize` into `ResizeMaxSize` brings +2.06 improvement for ViT-L-14-336. However, we find that the benifit of this modification is not consistent across different backbones. As shown in the following table, generally, `ResizeMaxSize` is more beneficial for large models, and especially the models that have been trained to process HD images (ViT-L-14 v.s. ViT-L-14-336).
+Changing `Resize` into `ResizeMaxSize` brings +2.06 improvement for ViT-L-14-336. However, we find that the benifit of this modification is not consistent across different backbones. As shown in the following table, generally, `ResizeMaxSize` is more beneficial for large models, and especially the models that have been trained to process HD images (e.g., it is quite beneficial for ViT-L-14-336 but not that much for ViT-L-14).
 
 |                                 Backbone                                |  RN50 |  RN101 | RN50x16 | ViT-B-32 | ViT-B-16 | ViT-L-14 | ViT-L-14-336 |
 |:-----------------------------------------------------------------------:|:-----:|:------:|:-------:|:--------:|:--------:|:--------:|:------------:|
@@ -96,9 +96,13 @@ Under this configuration, fine-tuning significantly improves the retrieval perfo
 |---------------|----------|--------------|--------------|----------|----------|----------|
 | Mean Recall   | 72.91    | **73.98   ** | **73.97   ** | 73.32    | 72.46    | 69.34    |
 
-**2. Weight Decay**. The author of [SLIP](https://arxiv.org/abs/2112.12750) paper observed that a large weight decay (0.5) is beneficial for CLIP. Here we find that CLIP fine-tuning is pretty robust to weight decay: ...
+**2. Weight Decay**. The author of [SLIP](https://arxiv.org/abs/2112.12750) paper observed that a larger weight decay (0.5) is beneficial for CLIP. Our experiments also showed that **CLIP can also handle a very large value of weight decay** (i.e., 2.50). Here the training data have 118k samples, and we believe that such property can further benefit CLIP fine-tuning when the data is limited. Our results, as shown in the following table, show that **CLIP is pretty robust to weight decay changes**: when vary the value from 0.01 to 2.50, the performance changes in a range of only +- 0.43.
 
-**3. Training Length**. Similar to the experiments in [FLIP](https://arxiv.org/abs/2212.00794), our experiemtns showed that scaling training epochs cannot lead to further performance improvement. Only 5 or 10 epochs are not sufficient, but 15-20 epochs seems already reached the saturation.
+| Weight   Decay | 2.50     | 2.25     | 2.00     | 1.75     | 1.50     | 1.25     | 1.00     | 0.75     | 0.50     | 0.10     | 0.05     | 0.01     |
+|----------------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|----------|
+| Mean Recall    | 74.07    | 73.94    | 73.87    | 73.84    | 73.94    | 73.94    | 74.05    | 73.87    | 73.98    | 73.93    | 73.64    | 73.79    |
+
+**3. Training Length**. Similar to the experiments in [FLIP](https://arxiv.org/abs/2212.00794), our experiments showed that **scaling training epochs cannot lead to further performance improvement**. Only 5 or 10 epochs are not sufficient, but 15-20 epochs seems already reached the saturation.
 
 |       Epochs       |   5   |   10  |     15    |     20    |   30  |
 |:------------------:|:-----:|:-----:|:---------:|:---------:|:-----:|
@@ -106,11 +110,51 @@ Under this configuration, fine-tuning significantly improves the retrieval perfo
 | Learning Rate=2e-5 | 72.86 | 73.97 | **74.28** |   74.02   | 74.03 |
 
 
-## Finetuning with More Tricks
+**4. Batch Size**. It is well known that batch size has a crucial impact for contrastive learning methods. We confirm this point by varying batch size from 32 to 800 (the maximum allowed batch size for ResNet-50 CLIP on a 8x2080ti machine) while changing learning rate according to liner scaling rule. It shows that **scaling down batch size leads to significant performance drop**:
 
-Under construction ...
+| BatchSize     | 800       | 512      | 256      | 128      | 64       | 32       |
+|---------------|-----------|----------|----------|----------|----------|----------|
+| Learning Rate | 3.125E-05 | 2.00E-05 | 1.00E-05 | 5.00E-06 | 2.50E-06 | 1.25E-06 |
+| Mean Recall   | 74.89     | 74.85    | 73.98    | 72.14    | 69.24    | 65.04    |
 
-**1. Partial finetuning**
+
+**5. Improved Naive Baseline with Better Hyper-parameters ✨**. Combining all the above hyper-parameter sweep observations together, we increase the mean recall of naive fine-tuning baseline from 73.98 to 75.04.
+
+<details>
+<summary>Training Command</summary>
+
+```bash
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '15ep-bs800-lr3125e-8-wd1.0'
+```
+</details>
+
+|               | Baseline Hyper-parameters | Improved Hyper-parameters |
+|---------------|---------------------------|---------------------------|
+| backbone:     | ResNet50                  | ResNet50                  |
+| batch_size:   | 32x8=256                  | 100x8=800                 |
+| epochs:       | 10                        | 15                        |
+| lr:           | 1e-05                     | 3.125e-05                 |
+| weight_decay: | 0.5                       | 1.0                       |
+
+
+|Model             | I2T R@1| I2T R@5I| I2T R@10| T2I R@1| T2I R@5| T2I R@10|Mean Recall|
+|------------------|--------|--------|--------|--------|--------|--------|----------|
+| Baseline          | 64.84  | 86.62  | 92.30  | 44.99  | 72.76  | 82.34  | 73.98    |
+| Improved Baseline | 65.34  | 87.44  | 92.84  | 46.70  | 74.45  | 83.47  | 75.04    |
+
+
+## Fine-tuning with More Tricks
+
+
+**1. Scaling up Batch Size and Avoid Over-fitting: Partial fine-tuning**
 
 ```bash
   # lock image tower, i.e., Locked Image Tuning (LiT) https://arxiv.org/abs/2111.07991
@@ -129,82 +173,54 @@ Under construction ...
 --lock-image-partial '!bias,!ln,!bn' --lock-text-partial '!bias,!ln' --lock-image-model  --lock-text-model \
 ```
 
-**2. Exponential Moving Average (EMA)**
+```bash
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model --lock-image-partial '!attnpool,!layer4' --lock-image-model  --lock-text-model \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '15ep-bs800-lr3125e-8-wd1.0-lock-text-unlock-image[attnpool,layer4]'
+```
+
+
+**2. Layer-wise Learning Rate Decay (LLDR)**
+
+```bash
+--layer_decay_image 0.9 --layer_decay_text 1 \
+```
+
+**3. Exponential Moving Average (EMA)**
 ```bash
 --model_ema --model_ema_decay 0.998 \
 ```
 
 
-**3. Layer-wise Learning Rate Decay (LLDR)**
-
-```bash
---layer_decay_image 0.9 --layer_decay_text 1 \
-```
 
 **4. Wise-FT**. Evaluate the model with weight space ensemble [Wise-FT](https://arxiv.org/abs/2109.01903)
 ```bash
 --eval-with-wise-ft 0.5 \
 ```
 
+## Plus Classification Dataset (via UniCL)
 
-## Fine-tuning with Classification Dataset (UniCL)
-
-...
 
 ```bash
-# Vanilla Naive finetuning
-# 8x2080ti machine, ms coco 10 epoch
+# COCO + ImageNet50k    
 torchrun --nproc_per_node 8 -m training.main \
     --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
     --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
-    --epochs 10 --save-frequency 0 --batch-size 32 --workers 2 \
-    --lr 1e-5 --warmup 100 --weight_decay 2.25 --max-grad-norm 5 \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
     --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
     --pretrained-image-model --pretrained-text-model \
-    --loss 'InfoNCE' \
-    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '10ep-bs256-lr1e-5-wd2.25'
-
-    
-# Vanilla Naive finetuning
-# 8x2080ti machine, ms coco 10 epoch
-torchrun --nproc_per_node 8 -m training.main \
-    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
-    --epochs 10 --save-frequency 0 --batch-size 32 --workers 2 \
-    --lr 1e-5 --warmup 100 --weight_decay 2.5 --max-grad-norm 5 \
-    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
-    --pretrained-image-model --pretrained-text-model \
-    --loss 'InfoNCE' \
-    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '10ep-bs256-lr1e-5-wd2.5'
-    
-    
-    
-# Vanilla Naive finetuning
-# 8x2080ti machine, ms coco 10 epoch
-torchrun --nproc_per_node 8 -m training.main \
-    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
-    --epochs 30 --save-frequency 0 --batch-size 32 --workers 2 \
-    --lr 1e-5 --warmup 100 --weight_decay 0.5 --max-grad-norm 5 \
-    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
-    --pretrained-image-model --pretrained-text-model \
-    --loss 'InfoNCE' \
-    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '30ep-bs256-lr1e-5-wd0.5'
-    
-# Vanilla Naive finetuning
-# 8x2080ti machine, ms coco 10 epoch
-torchrun --nproc_per_node 8 -m training.main \
-    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
-    --epochs 30 --save-frequency 0 --batch-size 32 --workers 2 \
-    --lr 2e-5 --warmup 100 --weight_decay 0.5 --max-grad-norm 5 \
-    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
-    --pretrained-image-model --pretrained-text-model \
-    --loss 'InfoNCE' \
-    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '30ep-bs256-lr2e-5-wd0.5'
+    --loss 'UniCL' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '15ep-bs800-lr3125e-8-wd1.0-UniCL'    
 ```
 
-
+### RSICD?
 
 ```bash
 # 8x2080ti machine, RSICD

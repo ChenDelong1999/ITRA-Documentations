@@ -47,6 +47,7 @@ Welcome to the docmentation of ITRA ! 🎈
    Contents/example-usage/eval-only
    Contents/example-usage/clip-pretraining
    Contents/example-usage/clip-finetuning
+   Contents/example-usage/unicl-image-classification
 
 
 .. todo::
