@@ -27,8 +27,7 @@ Welcome to the docmentation of ITRA ! 🎈
    :caption: Getting Started
 
    Contents/getting-started/install-dependencies
-   Contents/getting-started/prepare-pretraining-data
-   Contents/getting-started/prepare-downstream-data
+   Contents/getting-started/prepare-data
 
 .. toctree::
    :maxdepth: 3
@@ -44,10 +43,10 @@ Welcome to the docmentation of ITRA ! 🎈
    :maxdepth: 3
    :caption: Example Usage
 
-   Contents/example-usage/eval-only
-   Contents/example-usage/clip-pretraining
    Contents/example-usage/clip-finetuning
    Contents/example-usage/unicl-image-classification
+   Contents/example-usage/eval-only
+   Contents/example-usage/clip-pretraining
 
 
 .. todo::

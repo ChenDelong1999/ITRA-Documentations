@@ -8,7 +8,7 @@ conda activate ITRA
 export PYTHONPATH="$PYTHONPATH:$PWD/src"
 ```
 
-## Contrastive Language Image Pretraining From Scratch
+## Standard Contrastive Language Image Pretraining From Scratch
 
 Training a CLIP from scratch is the most straight forward usage of `ITRA`. By specifying `--loss 'InfoNCE'`, the model will contrast image and text samples within a batch.
 
@@ -22,4 +22,10 @@ torchrun --nproc_per_node 8 -m training.main \
     --loss 'InfoNCE' \
     --report-to tensorboard --logs 'logs/example-usage/clip-pretraining/YFCC14M-8_epoch-RN50'
 ```
-```
+
+
+## Train a Tiny CLIP
+
+- AlexNet, MobileNet?
+- Small SBERT?
+- GloVe Embeddings?

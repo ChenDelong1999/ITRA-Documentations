@@ -8,6 +8,9 @@ ITRA is a codebase for flexible and efficient Image Text Representation Alignmen
 - [HuggingFace Transformers](https://huggingface.co/docs/transformers)
 - [Sentence Transformers](https://www.sbert.net/docs/pretrained_models.html)
 - [Adapter-Transformers](https://github.com/adapter-hub/adapter-transformers)
+- TorchHub
+- ChineseCLIP
+- ...
 
 ## Training Objectives
 - CLIP: InfoNCE, ProtoCLIP

@@ -12,18 +12,31 @@ Compare to [MMClassification](https://mmclassification.readthedocs.io/zh_CN/late
 
 ```bash
 # Single GPU classification
-python src/training/main.py \
+python itra/training/main.py \
     --train-data 'CIFAR10' \
-    --zeroshot-frequency 10 --eval-data-dir '/data/Datasets' \
+    --linear-frequency 20  --zeroshot-frequency 20 --datasets-dir '/data/Datasets' \
     --epochs 200 --save-frequency 0 --batch-size 128 --workers 4 \
     --opt 'sgd' --lr 0.1 --warmup 100 --weight_decay 0.0001 \
     --image-model 'resnet18' --image-model-builder 'torchvision' --image-resolution 32  --image-head-n-layers 1 \
-    --text-model 'RN50' --text-model-builder 'openclip' --lock-text-model \
-    --loss 'UniCL' \
-    --report-to tensorboard --logs 'logs/UniCL-Classification'  --name '200ep-resnet18-[CIFAR10]-32px'
+    --pretrained-text-model \
+    --text-model 'RN50' --text-model-builder 'openclip' --lock-text-model --text-head-n-layers 1  \
+    --loss 'CrossEntropy' --joint-projection-dim 10 \
+    --report-to tensorboard --logs 'logs/UniCL-Classification'  --name 'resnet18(scratch)-CIFAR10-200ep-CrossEntropy+linear_eval'
+    
+# Single GPU classification
+python itra/training/main.py \
+    --train-data 'CIFAR10' \
+    --linear-frequency 5 --zeroshot-frequency 5 --datasets-dir '/data/Datasets' \
+    --epochs 200 --save-frequency 0 --batch-size 128 --workers 4 \
+    --opt 'sgd' --lr 0.1 --warmup 100 --weight_decay 0.0001 \
+    --image-model 'resnet18' --image-model-builder 'torchvision' --image-resolution 32  --image-head-n-layers 1 \
+    --pretrained-text-model \
+    --text-model 'RN50' --text-model-builder 'openclip' --lock-text-model --text-head-n-layers 1  \
+    --loss 'InfoNCE' --joint-projection-dim 1024 \
+    --report-to tensorboard --logs 'logs/UniCL-Classification'  --name 'resnet18(scratch)-CIFAR10-200ep-InfoNCE+linear_eval'
 ```
 
 
-## CLIP Fine-tuning
+## Fine-tuning CLIP for ImageNet Classification
 
 Re-implement [this paper](https://arxiv.org/abs/2212.06138).

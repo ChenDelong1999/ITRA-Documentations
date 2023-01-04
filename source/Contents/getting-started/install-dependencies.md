@@ -18,24 +18,24 @@
 
    ```bash
   # TODO: update repo name
-   git clone https://github.com/megvii-research/protoclip
-   cd protoclip
-   export PYTHONPATH="$PYTHONPATH:$PWD/src"
+   git clone https://github.com/ChenDelong1999/ITRA
+   cd ITRA
+   export PYTHONPATH="$PYTHONPATH:$PWD/itra"
    ```
-   **Note**: If import error is occurred later, run `export PYTHONPATH="$PYTHONPATH:$PWD/src"` again.
+   **Note**: If import error is occurred later, run `export PYTHONPATH="$PYTHONPATH:$PWD/itra"` again.
 
 - Install additional dependencies:
     ```bash
     conda install pillow pandas scikit-learn ftfy tqdm matplotlib 
     conda install -c huggingface transformers 
     conda install -c conda-forge sentence-transformers
-    pip install adapter-transformers open_clip_torch pycocotools wandb
-    pip install faiss-gpu # TODO: faiss-gpu does not support windows OS, maybe use pip install faiss instead?
+    pip install adapter-transformers open_clip_torch pycocotools wandb timm clip-benchmark
   
-    pip install clip-benchmark # is this necessary?
+    # TODO: faiss-gpu does not support windows OS, maybe use pip install faiss instead?
+    pip install faiss-gpu
     
     # ELEVATOR requirements  
-    pip install yacs timm git+https://github.com/haotian-liu/CLIP_vlp.git vision-evaluation
+    pip install yacs git+https://github.com/haotian-liu/CLIP_vlp.git vision-evaluation
     
     # TODO: remove nori dependency
     pip install nori2

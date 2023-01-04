@@ -1,4 +1,4 @@
-# Fine-tuning CLIP for MS-COCO Retrieval ⭐
+# Fine-tuning CLIP for MS-COCO Retrieval
 
 [comment]: <> (**TL;DR**: we fine-tuned a CLIP)
 
@@ -42,7 +42,7 @@ First, assume that you have already created an environment with [required depend
 ```bash
 conda activate ITRA
 cd path/to/ITRA/
-export PYTHONPATH="$PYTHONPATH:$PWD/src"
+export PYTHONPATH="$PYTHONPATH:$PWD/itra"
 ulimit -n 100000 # occasionally the dataloader get stuck due to multiprocessing deadlocks, maybe it can reduce the chance. I'm not totally sure...
 ```
 
@@ -63,7 +63,7 @@ Then we can start to fine-tune a CLIP on MS-COCO captions 2017 training set (118
 ```bash
 torchrun --nproc_per_node 8 -m training.main \
     --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
     --epochs 10 --save-frequency 0 --batch-size 32 --workers 2 \
     --lr 1e-5 --warmup 100 --weight_decay 0.5 --max-grad-norm 5 \
     --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
@@ -126,7 +126,7 @@ Under this configuration, fine-tuning significantly improves the retrieval perfo
 ```bash
 torchrun --nproc_per_node 8 -m training.main \
     --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
     --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
     --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
     --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
@@ -151,8 +151,7 @@ torchrun --nproc_per_node 8 -m training.main \
 | Improved Baseline | 65.34  | 87.44  | 92.84  | 46.70  | 74.45  | 83.47  | 75.04    |
 
 
-## Fine-tuning with More Tricks
-
+## More Tricks for Fine-tuning
 
 **1. Scaling up Batch Size and Avoid Over-fitting: Partial fine-tuning**
 
@@ -173,17 +172,103 @@ torchrun --nproc_per_node 8 -m training.main \
 --lock-image-partial '!bias,!ln,!bn' --lock-text-partial '!bias,!ln' --lock-image-model  --lock-text-model \
 ```
 
+<details>
+<summary>Training Command</summary>
+
 ```bash
+# text backbone 逐层解锁
 torchrun --nproc_per_node 8 -m training.main \
     --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
     --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
     --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
     --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
-    --pretrained-image-model --pretrained-text-model --lock-image-partial '!attnpool,!layer4' --lock-image-model  --lock-text-model \
+    --pretrained-image-model --pretrained-text-model --lock-image-model \
+    --lock-text-model  --lock-text-partial '!ln_final,!text_projection'\
     --loss 'InfoNCE' \
-    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '15ep-bs800-lr3125e-8-wd1.0-lock-text-unlock-image[attnpool,layer4]'
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50-partial'  --name 'lock-image-lock-text(!ln_final,!text_projection)'
+   
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model --lock-image-model \
+    --lock-text-model --lock-text-partial '!resblocks.11,!ln_final,!text_projection' \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50-partial'  --name 'lock-image-lock-text(!11,!ln_final,!text_projection)'
+    
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model --lock-image-model \
+    --lock-text-model --lock-text-partial '!resblocks.11,!resblocks.10,!ln_final,!text_projection' \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50-partial'  --name 'lock-image-lock-text(!10-11,!ln_final,!text_projection)'
+    
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model --lock-image-model \
+    --lock-text-model --lock-text-partial '!resblocks.11,!resblocks.10,!resblocks.9,!resblocks.8,!ln_final,!text_projection' \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50-partial'  --name 'lock-image-lock-text(!8-11,!ln_final,!text_projection)'
+    
+    - - -
+    
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model --lock-image-model --lock-text-model \
+    --lock-text-partial '!resblocks.11,!resblocks.10,!resblocks.9,!resblocks.8,!resblocks.7,!resblocks.6,!ln_final,!text_projection' \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50-partial'  --name 'lock-image-lock-text(!6-11,!ln_final,!text_projection)'
+    
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model --lock-image-model --lock-text-model \
+    --lock-text-partial '!resblocks.11,!resblocks.10,!resblocks.9,!resblocks.8,!resblocks.7,!resblocks.6,!resblocks.5,!resblocks.4,!ln_final,!text_projection' \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50-partial'  --name 'lock-image-lock-text(!4-11,!ln_final,!text_projection)'
+    
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model --lock-image-model --lock-text-model \
+    --lock-text-partial '!resblocks.11,!resblocks.10,!resblocks.9,!resblocks.8,!resblocks.7,!resblocks.6,!resblocks.5,!resblocks.4,,!resblocks.3,!resblocks.2,!ln_final,!text_projection' \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50-partial'  --name 'lock-image-lock-text(!2-11,!ln_final,!text_projection)'
+    
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model --lock-image-model --lock-text-model \
+    --lock-text-partial '!resblocks.11,!resblocks.10,!resblocks.9,!resblocks.8,!resblocks.7,!resblocks.6,!resblocks.5,!resblocks.4,!resblocks.3,!resblocks.2,!resblocks.1,!resblocks.0,!ln_final,!text_projection' \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/MSCOCO-RN50-partial'  --name 'lock-image-lock-text(!0-11,!ln_final,!text_projection)'
+   
 ```
+</details>
 
 
 **2. Layer-wise Learning Rate Decay (LLDR)**
@@ -197,46 +282,11 @@ torchrun --nproc_per_node 8 -m training.main \
 --model_ema --model_ema_decay 0.998 \
 ```
 
-
-
 **4. Wise-FT**. Evaluate the model with weight space ensemble [Wise-FT](https://arxiv.org/abs/2109.01903)
 ```bash
 --eval-with-wise-ft 0.5 \
 ```
 
-## Plus Classification Dataset (via UniCL)
-
-
-```bash
-# COCO + ImageNet50k    
-torchrun --nproc_per_node 8 -m training.main \
-    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
-    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
-    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
-    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
-    --pretrained-image-model --pretrained-text-model \
-    --loss 'UniCL' \
-    --report-to tensorboard --logs 'logs/MSCOCO-RN50'  --name '15ep-bs800-lr3125e-8-wd1.0-UniCL'    
-```
-
-### RSICD?
-
-```bash
-# 8x2080ti machine, RSICD
-torchrun --nproc_per_node 8 -m training.main \
-    --train-data '/data/Datasets/RSICD/csv/rsicd_train.csv' --images-dir '/data/Datasets/RSICD/RSICD_images/RSICD_images' \
-    --csv-separator '\t' --csv-img-key 'filename' --csv-caption-key 'title' \
-    --retrieval-data '/data/Datasets/RSICD/csv/rsicd_test.csv' --retrieval-images-dir '/data/Datasets/RSICD/RSICD_images/RSICD_images' \
-    --retrieval-csv-separator '\t' --retrieval-csv-img-key 'filename' --retrieval-csv-caption-key 'title' \
-    --linear-frequency 0  --zeroshot-frequency 0 --retrieval-frequency 1  --nlp-eval-frequency 0  --eval-data-dir '/data/Datasets' \
-    --epochs 10 --save-frequency 10 --batch-size 64 --workers 4 \
-    --lr 5e-5 --warmup 100 --wd 0.5 --max-grad-norm 5 \
-    --image-model 'ViT-B-32' --image-model-builder 'openclip' --text-model 'ViT-B-32' --text-model-builder 'openclip'\
-    --pretrained-image-model --pretrained-text-model \
-    --loss 'InfoNCE' \
-    --report-to tensorboard --logs 'logs/RSICD'  --name 'ViT-B-32-finetune-lr=5e-5'
-```
 
 ## Exploring the Maximum Potential of a Single GPU
 
@@ -244,7 +294,7 @@ torchrun --nproc_per_node 8 -m training.main \
 # 2080 ti, Baseline
 python src/training/main.py \
     --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
     --epochs 10 --save-frequency 0 --batch-size 100 --workers 8 \
     --lr 5e-6 --warmup 100 --weight_decay 0.5 --max-grad-norm 5 \
     --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
@@ -256,7 +306,7 @@ python src/training/main.py \
 # 2080 ti, Baseline + tricks
 python src/training/main.py \
     --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --eval-data-dir '/data/Datasets' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
     --epochs 10 --save-frequency 0 --batch-size 100 --workers 8 \
     --lr 5e-6 --warmup 100 --weight_decay 0.5 --max-grad-norm 5 \
     --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
