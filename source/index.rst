@@ -45,10 +45,12 @@ Welcome to the docmentation of ITRA ! 🎈
    :maxdepth: 3
    :caption: Example Usage
 
-   Contents/example-usage/clip-finetuning
-   Contents/example-usage/unicl-image-classification
    Contents/example-usage/eval-only
    Contents/example-usage/clip-pretraining
+   Contents/example-usage/clip-finetuning
+   Contents/example-usage/unicl-image-classification
+   Contents/example-usage/language-to-vision-KD
+   Contents/example-usage/vision-to-language-KD
 
 
 .. todo::
