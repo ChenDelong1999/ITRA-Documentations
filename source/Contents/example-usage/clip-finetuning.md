@@ -195,7 +195,6 @@ torchrun --nproc_per_node 8 -m training.main \
     --lock-image-partial '!attnpool,!layer4' \
     --loss 'InfoNCE' \
     --report-to tensorboard --logs 'logs/MSCOCO-RN50-partial'  --name 'save-lock-image(!attnpool,!layer4)-lock-text(positional_embedding,token_embedding)-bs1792-lr7e-5'
-   
 ```
 </details>
 <br>
@@ -223,7 +222,6 @@ torchrun --nproc_per_node 8 -m training.main \
     --layer_decay_text $layer_decay_text; 
 done
 ```
-
 
 ### Exponential Moving Average (EMA)
 ```bash
@@ -260,19 +258,35 @@ done
 
 
 ```bash
-for alpha in 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 ;
+for alpha in 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0 ;
 do
-torchrun --nproc_per_node 8 -m training.main \
-    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
-    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
-    --epochs 15 --save-frequency 0 --batch-size 224 --workers 2 \
-    --lr 7e-5 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
-    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
-    --pretrained-image-model --pretrained-text-model --lock-image-model \
-    --lock-text-partial 'positional_embedding,token_embedding' \
-    --lock-image-partial '!attnpool,!layer4' \
-    --loss 'InfoNCE' \
+python itra/training/main.py \
+    --zeroshot-frequency 1 --retrieval-frequency 1 --retrieval-data 'mscoco_captions' --datasets-dir '/data/Datasets' \
+    --image-model 'RN50' --image-model-builder 'openclip'  \
+    --text-model 'RN50' --text-model-builder 'openclip'  \
+    --pretrained-image-model --pretrained-text-model \
+    --resume 'logs/MSCOCO-RN50-partial/save-lock-image(!attnpool,!layer4)-lock-text(positional_embedding,token_embedding)-bs1792-lr7e-5/checkpoints/epoch_15.pt' \
     --eval-with-wise-ft $alpha \
-    --report-to tensorboard --logs 'logs/MSCOCO-RN50-EMA'  --name 'model_ema_decay='model_ema_decay;
+    --logs 'logs/MSCOCO-RN50-WiseFT'  --name 'zs+retrieval-WiseFT='$alpha;
 done
 ```
+
+
+### rsicd retrieval
+```bash
+# 1x2080ti machine RSICD 对点
+torchrun --nproc_per_node 8 -m training.main \
+    --train-data '/data/Datasets/RSICD/csv/rsicd_train.csv' --images-dir '/data/Datasets/RSICD/RSICD_images/RSICD_images' \
+    --csv-separator '\t' --csv-img-key 'filename' --csv-caption-key 'title' \
+    --retrieval-data '/data/Datasets/RSICD/csv/rsicd_test.csv' --retrieval-images-dir '/data/Datasets/RSICD/RSICD_images/RSICD_images' \
+    --retrieval-csv-separator '\t' --retrieval-csv-img-key 'filename' --retrieval-csv-caption-key 'title' \
+    --retrieval-frequency 1  --datasets-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/RSICD-RN50'  --name '15ep-bs800-lr3125e-8-wd1.0'
+```
+
+
