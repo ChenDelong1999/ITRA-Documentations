@@ -9,7 +9,7 @@ Welcome to the docmentation of ITRA ! 🎈
 ``ITRA`` (abbreviation for Image Text Representation Alignment) is a codebase for flexible and efficient vision language learning.
 
 .. note::
-   ``ITRA`` is an ongoing project and its codes are still under development. A temporary repository of the codebase is located at: https://github.com/ChenDelong1999/ProtoRKD
+   ``ITRA`` is an ongoing project and its codes are still under development. A temporary repository of the codebase is located at: https://github.com/ChenDelong1999/ITRA
 
 
 .. image:: ../source/Contents/assets/pipeline.png
