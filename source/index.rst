@@ -21,6 +21,8 @@ Welcome to the docmentation of ITRA ! 🎈
    :caption: Introduction
 
    Contents/introduction/overview
+   Contents/introduction/related-work
+   Contents/introduction/change-log
 
 .. toctree::
    :maxdepth: 3
