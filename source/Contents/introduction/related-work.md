@@ -78,3 +78,10 @@ The toolkit adds a combining module that takes the outputs of the transformer in
 to produce rich multimodal features for downstream classification/regression layers.
 Given a pretrained transformer, the parameters of the combining module and transformer are trained based
 on the supervised task. For a brief literature review, check out the accompanying [blog post](https://medium.com/georgian-impact-blog/how-to-incorporate-tabular-data-with-huggingface-transformers-b70ac45fcfb4) on Georgian's Impact Blog. 
+
+
+
+## 贵司公开 Codebase
+
+- https://github.com/megvii-research/mdistiller
+- https://github.com/PyRetri/PyRetri
