@@ -1,9 +1,10 @@
 # Fine-tuning CLIP for MS-COCO Retrieval
 
-[comment]: <> (**TL;DR**: we fine-tuned a CLIP)
-
-
-
+In this section, we present an example usage and some empirical guides of fine-tuning CLIP for image-text retrieval. We aim to improve the retrieval performance based on the strong zero-shot retrieval ability (see our [evaluation report](../example-usage/eval-only.md)) of CLIP by fine-tuning CLIP on [MS COCO Captions](https://paperswithcode.com/dataset/coco) training set (118k images) with the InfoNCE loss. Contents and key findings of this section are listed as follows:
+- Fine-tuning CLIP on MS COCO training set improves the retrieval mean recall by +15% compared to raw zero-shot retrieval.
+- Proper hyper-parameters can bring at least +1% improvement.
+- Scale up batch size by partially freeze CLIP weights brings +1% improvement.
+- Compared to the zero-shot retrieval mean recall=58.39% of RN50 CLIP, at last we achieve 76.02% mean recall (17.63% improvement) by fine-tuning it with a 8x2080ti machine.
 
 ## Getting Started: Naive Fine-tuning Baseline
 
@@ -13,7 +14,6 @@ First, assume that you have already created an environment with [required depend
 conda activate ITRA
 cd path/to/ITRA/
 export PYTHONPATH="$PYTHONPATH:$PWD/itra"
-ulimit -n 100000 # occasionally the dataloader get stuck due to multiprocessing deadlocks, maybe it can reduce the chance. I'm not totally sure...
 ```
 
 Then we can start to fine-tune a CLIP on MS-COCO captions 2017 training set (118k images). The results should be compared with the [paper-with-code leaderboard](https://paperswithcode.com/sota/cross-modal-retrieval-on-coco-2014). Our baseline setting are listed as follows, we use a single-node machine with 8 NVIDIA GeForce 2080ti GPUs for training, one training epoch takes about 3.5 minutes.
@@ -54,11 +54,15 @@ Under this configuration, fine-tuning significantly improves the retrieval perfo
 |Single-stream| BLIP (large) |220|80.6|95.2|97.6|63.1|85.3|91.1|85.5|
 |Single-stream|PTP-BLIP (large) |220|84.2|79.3|98.8|68.8|89.5|94.2|88.8|
 
-**Note**: [Florence](https://paperswithcode.com/paper/florence-a-new-foundation-model-for-computer) and [PTP-BLIP](https://paperswithcode.com/paper/position-guided-text-prompt-for-vision) are respectively the two-stream and single-stream SoTA retrieval methods at [paper-with-code leaderboard](https://paperswithcode.com/sota/cross-modal-retrieval-on-coco-2014) by 2022.12.
+```eval_rst
+.. note ::
+  👆 Here `Florence <https://paperswithcode.com/paper/florence-a-new-foundation-model-for-computer>`_ and `PTP-BLIP <https://paperswithcode.com/paper/position-guided-text-prompt-for-vision>`_ are respectively the two-stream and single-stream SoTA retrieval methods at `paper-with-code leaderboard <https://paperswithcode.com/sota/cross-modal-retrieval-on-coco-2014>`_ by 2022.12.
+```
 
 
+---
 
-## Hyper-parameter Tuning
+## Tuning Hyper-parameters
 
 **1. Learning Rate**. We vary the learning rate from 5e-6 to 1e-4, and find that **1e-5 and 2e-5 are good for a batch size of 256**. This results confirms the observations in [this paper](https://arxiv.org/abs/2212.06138), where the authors showed that good ImageNet fine-tuning of CILP ViT-B-16 needs a quite small learning rate (2e-5 and 3e-5 for a batch size of 2048).
 
@@ -88,7 +92,17 @@ Under this configuration, fine-tuning significantly improves the retrieval perfo
 | Mean Recall   | 74.89     | 74.85    | 73.98    | 72.14    | 69.24    | 65.04    |
 
 
-**5. Improved Naive Baseline with Better Hyper-parameters ✨**. Combining all the above hyper-parameter sweep observations together, we increase the mean recall of naive fine-tuning baseline from 73.98 to 75.04.
+**5. ✨ Improved Naive Baseline with Better Hyper-parameters**. Combining all the above hyper-parameter sweep observations together, we increase the mean recall of naive fine-tuning baseline from 73.98 to 75.04.
+
+
+|               | Baseline Hyper-parameters | ✨ Improved Hyper-parameters |
+|---------------|---------------------------|---------------------------|
+| backbone:     | ResNet50                  | ResNet50                  |
+| batch_size:   | 32x8=256                  | 100x8=800                 |
+| epochs:       | 10                        | 15                        |
+| lr:           | 1e-05                     | 3.125e-05                 |
+| weight_decay: | 0.5                       | 1.0                       |
+
 
 <details>
 <summary>Training Command</summary>
@@ -106,41 +120,16 @@ torchrun --nproc_per_node 8 -m training.main \
 ```
 </details><br>
 
-|               | Baseline Hyper-parameters | Improved Hyper-parameters |
-|---------------|---------------------------|---------------------------|
-| backbone:     | ResNet50                  | ResNet50                  |
-| batch_size:   | 32x8=256                  | 100x8=800                 |
-| epochs:       | 10                        | 15                        |
-| lr:           | 1e-05                     | 3.125e-05                 |
-| weight_decay: | 0.5                       | 1.0                       |
-
+Results:
 
 |Model             | I2T R@1| I2T R@5I| I2T R@10| T2I R@1| T2I R@5| T2I R@10|Mean Recall|
 |------------------|--------|--------|--------|--------|--------|--------|----------|
 | Baseline          | 64.84  | 86.62  | 92.30  | 44.99  | 72.76  | 82.34  | 73.98    |
 | Improved Baseline | 65.34  | 87.44  | 92.84  | 46.70  | 74.45  | 83.47  | 75.04    |
 
+---
 
-## More Tricks for Fine-tuning
-
-### Scaling up Batch Size by Partial fine-tuning
-
-```bash
-  # lock image tower, i.e., Locked Image Tuning (LiT) https://arxiv.org/abs/2111.07991
---lock-image-model \
-
-# lock all weight in image tower, while only train the text tower
---lock-image-partial 'weight' \
-
-# only unlock all weight in image tower, while other params are locked
---lock-image-partial '!weight' --lock-image-model \
-
-# Only train the first layer (transformer block) of the image backbone
---lock-image-partial '!resblocks.0'  --lock-image-model \
-
-# Only unfreeze all bias and norm params, i.e., Bias and Normalization Optimization (BiNor) https://arxiv.org/abs/2203.07190
---lock-image-partial '!bias,!ln,!bn' --lock-text-partial '!bias,!ln' --lock-image-model  --lock-text-model \
-```
+## Scaling up Batch Size by Partially Freeze Weights
 
 
 | Fine-tuning   Streategy                   | Image  Params | Text  Params | Total Trainable Params (M) | %      | I2T R@1 | I2T R@5I | I2TR@10 | T2I R@1 | T2I R@5 | T2I R@10 | Mean Recall |
@@ -198,6 +187,9 @@ torchrun --nproc_per_node 8 -m training.main \
 ```
 </details>
 <br>
+
+
+## More Tricks for Fine-tuning
 
 ### Layer-wise Learning Rate Decay (LLDR)
 
@@ -281,12 +273,16 @@ torchrun --nproc_per_node 8 -m training.main \
     --retrieval-data '/data/Datasets/RSICD/csv/rsicd_test.csv' --retrieval-images-dir '/data/Datasets/RSICD/RSICD_images/RSICD_images' \
     --retrieval-csv-separator '\t' --retrieval-csv-img-key 'filename' --retrieval-csv-caption-key 'title' \
     --retrieval-frequency 1  --datasets-dir '/data/Datasets' \
-    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
-    --lr 3125e-8 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
-    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --epochs 30 --save-frequency 0 --batch-size 16 --workers 2 \
+    --lr 1e-6 --warmup 100 --weight_decay 0.5 --max-grad-norm 5 \
+    --image-model 'ViT-L-14-336' --image-model-builder 'openclip' \
+    --text-model 'ViT-L-14-336' --text-model-builder 'openclip' \
     --pretrained-image-model --pretrained-text-model \
-    --loss 'InfoNCE' \
-    --report-to tensorboard --logs 'logs/RSICD-RN50'  --name '15ep-bs800-lr3125e-8-wd1.0'
+    --lock-image-model --lock-text-model \
+    --lock-image-partial '!ln_post,!resblocks.23,!resblocks.22,!resblocks.21,!resblocks.20,!resblocks.19,!resblocks.18' \
+    --lock-text-partial '!text_projection,!ln_final,!resblocks.11,!resblocks.10,!resblocks.9' \
+    --loss 'InfoNCE' --layer_decay_image 0.9 --layer_decay_text 0.9 \
+    --report-to tensorboard --logs 'logs/RSICD-ViT-L-14'  --name '30ep-b128-lr1e-5-unlock-image-text-last0.75-lldr0.9'
 ```
 
 

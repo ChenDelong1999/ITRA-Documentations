@@ -40,6 +40,7 @@ Welcome to the docmentation of ITRA ! 🎈
    Contents/user-guide/training-data
    Contents/user-guide/loss-functions
    Contents/user-guide/use-adapters
+   Contents/user-guide/freeze-parameters
 
 .. toctree::
    :maxdepth: 3
