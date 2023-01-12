@@ -60,7 +60,7 @@ To load a ChineseCLIP with ResNet-50:
 --text-model 'IDEA-CCNL/Taiyi-CLIP-Roberta-102M-Chinese' --text-model-builder 'huggingface' \
 --pretrained-image-model --pretrained-text-model \
 
-# Taiyi-CLIP-Roberta-102M-Chinese
+# Taiyi-CLIP-Roberta-large-326M-Chinese
 --image-model 'ViT-L-14' --image-model-builder 'openclip' \
 --text-model 'IDEA-CCNL/Taiyi-CLIP-Roberta-large-326M-Chinese' --text-model-builder 'huggingface' \
 --pretrained-image-model --pretrained-text-model \

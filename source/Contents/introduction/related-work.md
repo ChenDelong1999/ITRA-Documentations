@@ -15,7 +15,7 @@ We further this with a replication study on a dataset of comparable size to Open
 
 ---
 
-## LAVIS - **LA**nguage **VIS**ion (Salesforce Research)
+## LAVIS - LAnguage VISion (Salesforce Research)
 
 [[github]](https://github.com/salesforce/LAVIS) | [[doc]](https://opensource.salesforce.com/LAVIS)
 

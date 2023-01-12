@@ -3,14 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the docmentation of ITRA ! 🎈
+Welcome to the documentation of ITRA ! 🎈
 ================================
 
 ``ITRA`` (abbreviation for Image Text Representation Alignment) is a codebase for flexible and efficient vision language learning.
 
-.. note::
+.. Important::
    ``ITRA`` is an ongoing project and its codes are still under development. A temporary repository of the codebase is located at: https://github.com/ChenDelong1999/ITRA
 
+.. note::
+   If you find any bugs or have any recommendations for building ``ITRA``, please raise a issue in the repo, thanks~
 
 .. image:: ../source/Contents/assets/pipeline.png
    :align: right
@@ -55,19 +57,27 @@ Welcome to the docmentation of ITRA ! 🎈
 
 
 .. todo::
-   - Method Supports
-         - MIM and FLIP support
-         - UniCL support
-         - SSL Image Augmentations
-         - Loading face encoder as image backbone
-         - Loading LLMs (OPT, PaLM) as text backbone
-         - ProtoCLIP implementation
-         - Verify the implementation of other loss functions
-         - Verify NLP evaluations (STS-B, MS-Marco, etc.)
+   New features incoming👇
 
-   - Documentation
-         - SimCSE and PromptBERT re-implementation
-         - Vision-to-language Knowledge Distillation
-         - Language-to-vision Knowledge Distillation
-         - Teacher selection based on Information Bottleneck Theory
-         - Chinese CLIPs' Evaluation Reports (ImageNet-CN zero-shot, MC-COCO-CN retrieval)
+   - Refract main.py
+   - Write help messages for arguments
+   - Use YAML
+   - Project
+        - install as package
+        - Pypi package publishing
+   - Evaluation reports
+        - zero-shot classification
+        - linear/knn classification
+        - clustering evaluation
+        - SentEval
+        - word embedding
+        - MS Marco retrieval
+        - Chinese CLIPs' Evaluation Reports (ImageNet-CN zero-shot, MC-COCO-CN retrieval)
+   - Implementations
+        - UniCL-based image classification
+        - Validate loss functions
+        - Validate Adapters
+        - SimCSE and PromptBERT re-implementation
+        - Vision-to-language Knowledge Distillation
+        - Language-to-vision Knowledge Distillation
+        - Teacher selection based on Information Bottleneck Theory

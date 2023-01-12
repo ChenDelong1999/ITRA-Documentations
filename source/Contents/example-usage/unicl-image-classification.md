@@ -40,3 +40,18 @@ python itra/training/main.py \
 ## Fine-tuning CLIP for ImageNet Classification
 
 Re-implement [this paper](https://arxiv.org/abs/2212.06138).
+
+
+
+
+
+python itra/training/main.py \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --dataset-size 1000 \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
+    --epochs 1 --save-frequency 1 --batch-size 32 --workers 2 \
+    --lr 1e-5 --warmup 100 --weight_decay 0.5 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model \
+    --loss 'InfoNCE' \
+    --report-to tensorboard --logs 'logs/test'  --name 'RN'
