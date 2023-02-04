@@ -29,7 +29,7 @@
     conda install pillow pandas scikit-learn ftfy tqdm matplotlib 
     conda install -c huggingface transformers 
     conda install -c conda-forge sentence-transformers
-    pip install adapter-transformers open_clip_torch pycocotools wandb timm clip-benchmark
+    pip install adapter-transformers open_clip_torch pycocotools wandb timm clip-benchmark pyyaml
   
     # TODO: faiss-gpu does not support windows OS, maybe use pip install faiss instead?
     pip install faiss-gpu

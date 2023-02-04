@@ -6,17 +6,23 @@
 Welcome to the documentation of ITRA ! 🎈
 ================================
 
-``ITRA`` (abbreviation for Image Text Representation Alignment) is a codebase for flexible and efficient vision language learning.
+``ITRA`` (abbreviation for Image Text Representation Alignment) is a codebase for flexible and efficient vision language learning. ``ITRA`` features a unified interface to easily access state-of-the-art pretrained models, adapters, loss functions from various sources.
+
+.. image:: ../source/Contents/assets/pipeline.png
+   :align: right
+   :width: 10in
+
+``ITRA`` supports training, evaluation and benchmarking on a rich variety of tasks, including zero-shot/k-NN/linear classification, retrieval, word embedding and sentence embedding evaluation. In the meantime, ``ITRA`` is also highly modular extensible and configurable, facilitating future development and customization.
+
+.. image:: ../source/Contents/assets/modular.png
+   :align: right
+   :width: 10in
 
 .. Important::
    ``ITRA`` is an ongoing project and its codes are still under development. A temporary repository of the codebase is located at: https://github.com/ChenDelong1999/ITRA
 
 .. note::
    If you find any bugs or have any recommendations for building ``ITRA``, please raise a issue in the repo, thanks~
-
-.. image:: ../source/Contents/assets/pipeline.png
-   :align: right
-   :width: 10in
 
 .. toctree::
    :maxdepth: 3
@@ -81,3 +87,4 @@ Welcome to the documentation of ITRA ! 🎈
         - Vision-to-language Knowledge Distillation
         - Language-to-vision Knowledge Distillation
         - Teacher selection based on Information Bottleneck Theory
+

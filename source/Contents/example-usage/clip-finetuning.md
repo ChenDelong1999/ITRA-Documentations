@@ -286,3 +286,16 @@ torchrun --nproc_per_node 8 -m training.main \
 ```
 
 
+python itra/training/main.py \
+    --config-yaml 'logs/params.yml' --name 'custom-name'
+
+python itra/training/main.py \
+    --episode-size 10000 \
+    --train-data 'mscoco_captions' --retrieval-data 'mscoco_captions' \
+    --retrieval-frequency 1 --datasets-dir '/data/Datasets' \
+    --epochs 15 --save-frequency 0 --batch-size 100 --workers 2 \
+    --lr 1e-4 --warmup 100 --weight_decay 1.0 --max-grad-norm 5 \
+    --image-model 'RN50' --image-model-builder 'openclip' --text-model 'RN50' --text-model-builder 'openclip'\
+    --pretrained-image-model --pretrained-text-model --lock-image-model --lock-text-model \
+    --loss 'InfoNCE' --prompt --n-prompt 4 \
+    --report-to tensorboard --logs 'logs/test'  --name 'coco-finetune-nprompt-4'
