@@ -14,12 +14,13 @@ Welcome to the documentation of ITRA ! 🎈
 
 ``ITRA`` supports training, evaluation and benchmarking on a rich variety of tasks, including zero-shot/k-NN/linear classification, retrieval, word embedding and sentence embedding evaluation. In the meantime, ``ITRA`` is also highly modular extensible and configurable, facilitating future development and customization.
 
+.. Important::
+   ``ITRA`` is an ongoing project developing by the Artificial Intelligence of Multi-modality Group (AIM Group, https://multimodality.group) at Hohai University lead by Prof. Fan Liu. A temporary repository of the codebase is located at: https://github.com/ChenDelong1999/ITRA
+
 .. image:: ../source/Contents/assets/modular.png
    :align: right
    :width: 10in
 
-.. Important::
-   ``ITRA`` is an ongoing project and its codes are still under development. A temporary repository of the codebase is located at: https://github.com/ChenDelong1999/ITRA
 
 .. note::
    If you find any bugs or have any recommendations for building ``ITRA``, please raise a issue in the repo, thanks~
